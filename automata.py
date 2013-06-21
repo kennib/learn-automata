@@ -1,5 +1,5 @@
 import graphics
-from random import randint
+from random import random
 from time import sleep
 from copy import deepcopy
  
@@ -15,7 +15,7 @@ display = graphics.SimpleDisplay("Cellular Automata", width, height, autoflush=F
 for row in range(height):
   game.append([]) # add in a row
   for col in range(width):
-    game[row].append(randint(0,4) > 3) # 2/5 chance of starting alive
+    game[row].append(random() < (2./5)) # 2/5 chance of starting alive
  
     # Display the game
     if game[row][col]:
