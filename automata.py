@@ -15,7 +15,7 @@ display = graphics.SimpleDisplay("Cellular Automata", width, height, autoflush=F
 for row in range(height):
   game.append([]) # add in a row
   for col in range(width):
-    game[row].append(randint(0,5) > 3) # 2/5 chance of starting alive
+    game[row].append(randint(0,4) > 3) # 2/5 chance of starting alive
  
     # Display the game
     if game[row][col]:
