@@ -1,81 +1,54 @@
+import copy
 import graphics
-from random import random
-from time import sleep
-from copy import deepcopy
- 
-# Config
-width = 20
-height = 15
-iterations = 500
-pause_time = 0.1
-game = []
-display = graphics.SimpleDisplay("Cellular Automata", width, height, autoflush=False)
 
-# Construct the board
-for row in range(height):
-  game.append([]) # add in a row
-  for col in range(width):
-    game[row].append(random() < (2./5)) # 2/5 chance of starting alive
- 
-    # Display the game
-    if game[row][col]:
-      display.plot(col, row, "black")
-    else:        
-      display.plot(col, row, "white")
- 
-# Play the game of life
-for iteration in range(iterations):
-  next_step = deepcopy(game) # copy the game
+number_of_iterations = 10
+display_pause_time = 1000
 
-  # Clear the old iteration from the display
-  display.clear()
-  
-  # Calculate the next iteration of the game
-  for row in range(height):
-    for col in range(width):
-      # Is this cell currently alive?
-      living = game[row][col]
- 
-      # Calculate the number of neighbours living
-      # 1 = alive, 0 = dead
-      living_neighbours = 0
-      # Vertical
-      if row+1 < height:
-        living_neighbours += game[row+1][col]
-      if row-1 >= 0:
-        living_neighbours += game[row-1][col]
-      # Horizontal
-      if col+1 < width:
-        living_neighbours += game[row][col+1]
-      if col-1 >= 0:
-        living_neighbours += game[row][col-1]
-      # Diagonal
-      if row+1 < height and col+1 < width:
-        living_neighbours += game[row+1][col+1]
-      if row-1 >= 0 and col+1 < width:
-        living_neighbours += game[row-1][col+1]
-      if row+1 < height and col-1 >= 0:
-        living_neighbours += game[row+1][col-1]
-      if row-1 >= 0 and col-1 >= 0:
-        living_neighbours += game[row-1][col-1]
- 
-      # Decide if the cell lives or dies
-      if living and ((living_neighbours==2) or (living_neighbours==3)):
-        next_step[row][col] = 1 # alive
-      elif (not living) and living_neighbours == 3:
-        next_step[row][col] = 1 # alive
+grid = [[1,0,0,1,1,0,0,1,1,1,0,0,1,0,0,1,1,0,0,1],[0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,0],[0,0,1,1,0,0,1,1,0,0,0,0,0,1,0,1,0,1,0,1],[0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,1,0,1,0,0],[0,1,0,0,0,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1],[0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,1,0,1,1,1],[0,0,1,1,1,0,1,0,0,0,1,1,1,0,0,0,0,1,1,1],[0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,1,1,0,0,0],[1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,0],[1,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,0],[1,0,1,1,0,0,0,0,1,0,1,0,1,1,0,0,1,1,1,0],[1,0,1,1,0,0,0,1,1,0,0,1,0,0,1,0,0,0,0,1],[1,1,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,1,1,0],[0,0,0,0,0,1,1,0,0,1,0,1,0,0,0,0,1,1,0,0],[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0]]
+
+display = graphics.SimpleDisplay("2D Cellular Automaton", len(grid[0]), len(grid), scale=30)
+
+alive = 1
+dead = 0
+
+# For each iteration...
+for iteration in range(number_of_iterations):
+
+  # Keep a copy of the previous iteration
+  previous_grid = copy.deepcopy(grid)
+
+  # For each cell in the grid...
+  for row, row_of_cells in enumerate(grid):
+    for column, cell in enumerate(row_of_cells):
+        
+      # Display the cell
+      if cell is alive:
+        display.plot(column, row, "black")
       else:
-        next_step[row][col] = 0 # dead
-     
-      # Display the game
-      if next_step[row][col]:
-        display.plot(col, row, "black")
-      else:        
-        display.plot(col, row, "white")
+        display.plot(column, row, "white")
 
-  # Update the display and show it for a little while
-  display.update()
-  display.pause(pause_time)
- 
-  # Update the game
-  game = next_step
+      # Count the number of living neighbours
+      living_neighbours = 0
+      for r in [row-1, row, row+1]:
+        for c in [column-1, column, column+1]:
+          if r > 0 and r < len(grid) and \
+             c > 0 and c < len(grid[0]) and \
+             not(r is row and c is column):
+            neighbour = previous_grid[r][c]
+            if neighbour is alive:
+                living_neighbours += 1
+
+      # Determine if the cell is living or dead in this iteration
+      if cell is alive:
+        if living_neighbours is 2 or living_neighbours is 3:
+          grid[row][column] = alive
+        else:
+          grid[row][column] = dead
+      else:
+        if living_neighbours is 3:
+          grid[row][column] = alive
+        else:
+          grid[row][column] = dead
+
+  
+  display.pause(display_pause_time)
