@@ -322,7 +322,7 @@ class SimpleDisplay(GraphWin):
     """A window which allows for scaling of pixels to make plotting easier."""
     
     def __init__(self, title="Simple Display",
-                 width=20, height=20, scale=10, autoflush=True):
+                 width=20, height=20, scale=10, autoflush=False):
       self.scale = scale
       super().__init__(title, width*self.scale, height*self.scale, autoflush)
       
@@ -355,6 +355,7 @@ class SimpleDisplay(GraphWin):
     def update(self):
         """Flush changes to the display"""
         self.flush()
+        self.clear()
     
     def pause(self, ms):
         """Pause for a given number of milliseconds"""
