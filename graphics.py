@@ -325,6 +325,7 @@ class SimpleDisplay(GraphWin):
                  width=20, height=20, scale=10, autoflush=False):
       self.scale = scale
       super().__init__(title, width*self.scale, height*self.scale, autoflush)
+      self.configure(background='white')
       
     def toCoords(self, x, y):
         """Return the actual pixel co-ordinates of a scaled pixel"""
