@@ -180,7 +180,7 @@ class GraphWin(tk.Canvas):
 
     def __init__(self, title="Graphics Window",
                  width=200, height=200, autoflush=True):
-        master = tk.Toplevel(_root)
+        self.master = master = tk.Toplevel(_root)
         master.protocol("WM_DELETE_WINDOW", self.close)
         tk.Canvas.__init__(self, master, width=width, height=height)
         self.master.title(title)
@@ -361,6 +361,10 @@ class SimpleDisplay(GraphWin):
     def pause(self, ms):
         """Pause for a given number of milliseconds"""
         self.after(int(ms))
+    
+    def begin(self):
+        """Begin the main loop to prevent freezing"""
+        _root.mainloop()
 
 class Transform:
 
