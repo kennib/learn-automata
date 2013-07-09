@@ -52,3 +52,5 @@ for iteration in range(number_of_iterations):
 
   
   display.pause(display_pause_time)
+  
+  display.start()
